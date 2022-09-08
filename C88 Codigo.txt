@@ -1,0 +1,348 @@
+fetchUser = () => {
+    let theme;
+    firebase
+      .ref("/users/jT9vClO81vPtMCjuCrUMAQpuAYc2/") //Checar usuario de la BD
+      .on("value", snapshot => {
+        theme = snapshot.val().current_theme;
+        this.setState({ light_theme: theme === "light" });
+      });
+  };
+-------------------------------------------------------------------------------
+                <View style={styles.submitButton}>
+                <Button
+                  onPress={() => this.addStory()}
+                  title="Subir"
+                  color="#841584"
+                />
+              </View>
+----------------------------------------------------------------------------
+    submitButton: {
+    marginTop: RFValue(20),
+    alignItems: "center",
+    justifyContent: "center"
+  }
+----------------------------------------------------------------------------
+  async addStory() {
+    var time = new Date();
+    var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+    fecha = time.getDate()+" de "+ meses[time.getMonth()] + " del " + time.getFullYear();
+
+    if (
+      this.state.title &&
+      this.state.description &&
+      this.state.story &&
+      this.state.moral
+    ) {
+      let storyData = {
+        preview_image: this.state.previewImage,
+        title: this.state.title,
+        description: this.state.description,
+        story: this.state.story,
+        moral: this.state.moral,
+        author: "Kary",
+        created_on: fecha,
+        author_uid: Math.random().toString(36).slice(2),
+        likes: 0
+      };
+      await firebase
+        .ref(
+          "/posts/" +
+            Math.random()
+              .toString(36)
+              .slice(2)
+        )
+        .set(storyData)
+        .then(function(snapshot) {});
+      this.props.setUpdateToTrue();
+      this.props.navigation.navigate("Índice");
+    } else {
+      Alert.alert(
+        "Error",
+        "¡Todos los campos son requeridos!",
+        [{ text: "OK", onPress: () => console.log("OK presionado") }],
+        { cancelable: false }
+      );
+    }
+  }
+----------------------------------------------------------------------------------
+style={this.state.light_theme ? styles.containerLight : styles.container }
+---------------------------------------------------------------------------------
+style={this.state.light_theme ? styles.appTitleTextLight : styles.appTitleText}>
+---------------------------------------------------------------------------------
+borderRadius: RFValue(20),
+                    marginBottom: RFValue(20),
+                    marginHorizontal: RFValue(10)
+-------------------------------------------------------------------------------
+backgroundColor: this.state.light_theme ? "#eee" : "#2f345d"
+----------------------------------------------------------------------------
+                  labelStyle={
+                    this.state.light_theme
+                      ? styles.dropdownLabelLight
+                      : styles.dropdownLabel
+                  }
+                  arrowStyle={
+                    this.state.light_theme
+                      ? styles.dropdownLabelLight
+                      : styles.dropdownLabel
+                  }
+-----------------------------------------------------------------------------
+            <View style={{ marginHorizontal: RFValue(10) }}>
+                <TextInput
+                  style={
+                    this.state.light_theme
+                      ? styles.inputFontLight
+                      : styles.inputFont
+                  }
+                  onChangeText={title => this.setState({ title })}
+                  placeholder={"Título"}
+                  placeholderTextColor={
+                    this.state.light_theme ? "black" : "white"
+                  }
+                />
+                <TextInput
+                  style={[
+                    this.state.light_theme
+                      ? styles.inputFontLight
+                      : styles.inputFont,
+                    styles.inputFontExtra,
+                    styles.inputTextBig
+                  ]}
+                  onChangeText={description => this.setState({ description })}
+                  placeholder={"Descripción"}
+                  multiline={true}
+                  numberOfLines={4}
+                  placeholderTextColor={
+                    this.state.light_theme ? "black" : "white"
+                  }
+                />
+                <TextInput
+                  style={[
+                    this.state.light_theme
+                      ? styles.inputFontLight
+                      : styles.inputFont,
+                    styles.inputFontExtra,
+                    styles.inputTextBig
+                  ]}
+                  onChangeText={story => this.setState({ story })}
+                  placeholder={"Historia"}
+                  multiline={true}
+                  numberOfLines={20}
+                  placeholderTextColor={
+                    this.state.light_theme ? "black" : "white"
+                  }
+                />
+                <TextInput
+                  style={[
+                    this.state.light_theme
+                      ? styles.inputFontLight
+                      : styles.inputFont,
+                    styles.inputFontExtra,
+                    styles.inputTextBig
+                  ]}
+                  onChangeText={moral => this.setState({ moral })}
+                  placeholder={"Moraleja de la historia"}
+                  multiline={true}
+                  numberOfLines={4}
+                  placeholderTextColor={
+                    this.state.light_theme ? "black" : "white"
+                  }
+                />
+              </View>
+--------------------------------------------------------------------------------
+  container: {
+    flex: 1,
+    backgroundColor: "#15193c"
+  },
+  containerLight: {
+    flex: 1,
+    backgroundColor: "white"
+  },
+  droidSafeArea: {
+    marginTop: Platform.OS === "android" ? StatusBar.currentHeight : RFValue(35)
+  },
+  appTitle: {
+    flex: 0.07,
+    flexDirection: "row"
+  },
+  appIcon: {
+    flex: 0.3,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  iconImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain"
+  },
+  appTitleTextContainer: {
+    flex: 0.7,
+    justifyContent: "center"
+  },
+  appTitleText: {
+    color: "white",
+    fontSize: RFValue(28),
+    fontFamily: "Bubblegum-Sans"
+  },
+  appTitleTextLight: {
+    color: "black",
+    fontSize: RFValue(28),
+    fontFamily: "Bubblegum-Sans"
+  },
+  fieldsContainer: {
+    flex: 0.85
+  },
+  previewImage: {
+    width: "93%",
+    height: RFValue(250),
+    alignSelf: "center",
+    borderRadius: RFValue(10),
+    marginVertical: RFValue(10),
+    resizeMode: "contain"
+  },
+  inputFont: {
+    height: RFValue(40),
+    borderColor: "white",
+    borderWidth: RFValue(1),
+    borderRadius: RFValue(10),
+    paddingLeft: RFValue(10),
+    color: "white",
+    fontFamily: "Bubblegum-Sans"
+  },
+  inputFontLight: {
+    height: RFValue(40),
+    borderColor: "black",
+    borderWidth: RFValue(1),
+    borderRadius: RFValue(10),
+    paddingLeft: RFValue(10),
+    color: "black",
+    fontFamily: "Bubblegum-Sans"
+  },
+  dropdownLabel: {
+    color: "white",
+    fontFamily: "Bubblegum-Sans"
+  },
+  dropdownLabelLight: {
+    color: "black",
+    fontFamily: "Bubblegum-Sans"
+  },
+  inputFontExtra: {
+    marginTop: RFValue(15)
+  },
+  inputTextBig: {
+    textAlignVertical: "top",
+    padding: RFValue(5)
+  },
+-------------------------------------------------------------------------------
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false
+      }}
+    >
+      <Stack.Screen name="Home" component={TabNavigator} />
+      <Stack.Screen name="StoryScreen" component={StoryScreen} />
+------------------------------------------------------------------------------
+export default class BottomTabNavigator extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      light_theme: true,
+      isUpdated: false
+    };
+  }
+
+  renderFeed = props => {
+    return <Feed setUpdateToFalse={this.removeUpdated} {...props} />;
+  };
+
+  renderStory = props => {
+    return <CreateStory setUpdateToTrue={this.changeUpdated} {...props} />;
+  };
+
+  changeUpdated = () => {
+    this.setState({ isUpdated: true });
+  };
+
+  removeUpdated = () => {
+    this.setState({ isUpdated: false });
+  };
+
+  componentDidMount() {
+    this.gettheme();
+  }
+
+  gettheme = () => {
+    let theme;
+    firebase
+      .ref("/users/HIxeXreDeIWEDwzd20lFWh64Mtx1/")
+      .on("value", snapshot => {
+        theme = snapshot.val().current_theme;
+        this.setState({ light_theme: theme === "light" });
+      });
+  };
+  render() {
+    return (
+      <Tab.Navigator
+        labeled={false}
+        barStyle={
+          this.state.light_theme
+            ? styles.bottomTabStyleLight
+            : styles.bottomTabStyle
+        }
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Índice") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Crear historia") {
+              iconName = focused ? "add-circle" : "add-circle-outline";
+            }
+            return (
+              <Ionicons
+                name={iconName}
+                size={RFValue(25)}
+                color={color}
+                style={styles.icons}
+              />
+            );
+          }
+        })}
+        activeColor={"#ee8249"}
+        inactiveColor={"gray"}
+      >
+        <Tab.Screen
+          name="Índice"
+          component={this.renderFeed}
+          options={{ unmountOnBlur: true }}
+        />
+        <Tab.Screen
+          name="Crear historia"
+          component={this.renderStory}
+          options={{ unmountOnBlur: true }}
+        />
+      </Tab.Navigator>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  bottomTabStyle: {
+    backgroundColor: "#2f345d",
+    height: "8%",
+    borderTopLeftRadius: RFValue(30),
+    borderTopRightRadius: RFValue(30),
+    overflow: "hidden",
+    position: "absolute"
+  },
+  bottomTabStyleLight: {
+    backgroundColor: "#eaeaea",
+    height: "8%",
+    borderTopLeftRadius: RFValue(30),
+    borderTopRightRadius: RFValue(30),
+    overflow: "hidden",
+    position: "absolute"
+  },
+  icons: {
+    width: RFValue(30),
+    height: RFValue(30)
+  }
+});
